@@ -30,8 +30,8 @@ pipeline {
         stage('Deploy to Dev') {
             steps {
                 bat """
-                    pm2 delete greetings-app-dev || echo Service not found, continuing...
-                    pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-dev -- --port 7001
+                    npx pm2 delete greetings-app-dev || echo Service not found, continuing...
+                    npx pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-dev -- --port 7001
                 """
             }
         }
