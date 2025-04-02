@@ -10,8 +10,12 @@ pipeline {
         stage('Clone Repositories') {
             steps {
                 script {
-                    sh 'git clone https://github.com/mtararujs/python-greetings ${PYTHON_GREETINGS_DIR}'
-                    sh 'git clone https://github.com/mtararujs/course-js-api-framework ${JS_API_FRAMEWORK_DIR}'
+                    powershell """
+                        if (Test-Path ${PYTHON_GREETINGS_DIR}) { Remove-Item -Recurse -Force ${PYTHON_GREETINGS_DIR} }
+                        if (Test-Path ${JS_API_FRAMEWORK_DIR}) { Remove-Item -Recurse -Force ${JS_API_FRAMEWORK_DIR} }
+                        git clone https://github.com/mtararujs/python-greetings ${PYTHON_GREETINGS_DIR}
+                        git clone https://github.com/mtararujs/course-js-api-framework ${JS_API_FRAMEWORK_DIR}
+                    """
                 }
             }
         }
@@ -19,9 +23,9 @@ pipeline {
         stage('Install Python Dependencies') {
             steps {
                 script {
-                    sh """
-                        echo "Starting dependency installation..."
-                        pip3 install -r ${PYTHON_GREETINGS_DIR}/requirements.txt
+                    powershell """
+                        Write-Host "Starting dependency installation..."
+                        pip3 install -r ${PYTHON_GREETINGS_DIR}\\requirements.txt
                     """
                 }
             }
@@ -30,9 +34,9 @@ pipeline {
         stage('Deploy to Dev') {
             steps {
                 script {
-                    sh """
-                        pm2 delete "greetings-app-dev" || echo "Service not found, continuing..."
-                        pm2 start -f ${PYTHON_GREETINGS_DIR}/app.py --name greetings-app-dev -- --port 7001
+                    powershell """
+                        pm2 delete "greetings-app-dev" -ErrorAction SilentlyContinue
+                        pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-dev -- --port 7001
                     """
                 }
             }
@@ -41,8 +45,8 @@ pipeline {
         stage('Test on Dev') {
             steps {
                 script {
-                    sh """
-                        cd ${JS_API_FRAMEWORK_DIR}
+                    powershell """
+                        Set-Location ${JS_API_FRAMEWORK_DIR}
                         npm install
                         npm run greetings greetings_dev
                     """
@@ -53,9 +57,9 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 script {
-                    sh """
-                        pm2 delete "greetings-app-staging" || echo "Service not found, continuing..."
-                        pm2 start -f ${PYTHON_GREETINGS_DIR}/app.py --name greetings-app-staging -- --port 7002
+                    powershell """
+                        pm2 delete "greetings-app-staging" -ErrorAction SilentlyContinue
+                        pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-staging -- --port 7002
                     """
                 }
             }
@@ -64,8 +68,8 @@ pipeline {
         stage('Test on Staging') {
             steps {
                 script {
-                    sh """
-                        cd ${JS_API_FRAMEWORK_DIR}
+                    powershell """
+                        Set-Location ${JS_API_FRAMEWORK_DIR}
                         npm install
                         npm run greetings greetings_stg
                     """
@@ -76,9 +80,9 @@ pipeline {
         stage('Deploy to Preprod') {
             steps {
                 script {
-                    sh """
-                        pm2 delete "greetings-app-preprod" || echo "Service not found, continuing..."
-                        pm2 start -f ${PYTHON_GREETINGS_DIR}/app.py --name greetings-app-preprod -- --port 7003
+                    powershell """
+                        pm2 delete "greetings-app-preprod" -ErrorAction SilentlyContinue
+                        pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-preprod -- --port 7003
                     """
                 }
             }
@@ -87,8 +91,8 @@ pipeline {
         stage('Test on Preprod') {
             steps {
                 script {
-                    sh """
-                        cd ${JS_API_FRAMEWORK_DIR}
+                    powershell """
+                        Set-Location ${JS_API_FRAMEWORK_DIR}
                         npm install
                         npm run greetings greetings_preprod
                     """
@@ -99,9 +103,9 @@ pipeline {
         stage('Deploy to Prod') {
             steps {
                 script {
-                    sh """
-                        pm2 delete "greetings-app-prod" || echo "Service not found, continuing..."
-                        pm2 start -f ${PYTHON_GREETINGS_DIR}/app.py --name greetings-app-prod -- --port 7004
+                    powershell """
+                        pm2 delete "greetings-app-prod" -ErrorAction SilentlyContinue
+                        pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-prod -- --port 7004
                     """
                 }
             }
@@ -110,8 +114,8 @@ pipeline {
         stage('Test on Prod') {
             steps {
                 script {
-                    sh """
-                        cd ${JS_API_FRAMEWORK_DIR}
+                    powershell """
+                        Set-Location ${JS_API_FRAMEWORK_DIR}
                         npm install
                         npm run greetings greetings_prod
                     """
@@ -122,11 +126,11 @@ pipeline {
         stage('Cleanup') {
             steps {
                 script {
-                    sh """
-                        pm2 delete "greetings-app-dev" || true
-                        pm2 delete "greetings-app-staging" || true
-                        pm2 delete "greetings-app-preprod" || true
-                        pm2 delete "greetings-app-prod" || true
+                    powershell """
+                        pm2 delete "greetings-app-dev" -ErrorAction SilentlyContinue
+                        pm2 delete "greetings-app-staging" -ErrorAction SilentlyContinue
+                        pm2 delete "greetings-app-preprod" -ErrorAction SilentlyContinue
+                        pm2 delete "greetings-app-prod" -ErrorAction SilentlyContinue
                     """
                 }
             }
