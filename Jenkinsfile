@@ -49,8 +49,8 @@ pipeline {
         stage('Deploy to Staging') {
             steps {
                 bat """
-                    pm2 delete greetings-app-staging || echo Service not found, continuing...
-                    pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-staging -- --port 7002
+                    npx pm2 delete greetings-app-staging || exit 0
+                    npx pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-staging -- --port 7002
                 """
             }
         }
@@ -68,8 +68,8 @@ pipeline {
         stage('Deploy to Preprod') {
             steps {
                 bat """
-                    pm2 delete greetings-app-preprod || echo Service not found, continuing...
-                    pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-preprod -- --port 7003
+                    npx pm2 delete greetings-app-preprod || exit 0
+                    npx pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-preprod -- --port 7003
                 """
             }
         }
@@ -87,8 +87,8 @@ pipeline {
         stage('Deploy to Prod') {
             steps {
                 bat """
-                    pm2 delete greetings-app-prod || echo Service not found, continuing...
-                    pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-prod -- --port 7004
+                    npx pm2 delete greetings-app-prod || exit 0
+                    npx pm2 start ${PYTHON_GREETINGS_DIR}\\app.py --name greetings-app-prod -- --port 7004
                 """
             }
         }
@@ -106,10 +106,10 @@ pipeline {
         stage('Cleanup') {
             steps {
                 bat """
-                    pm2 delete greetings-app-dev || echo Service not found, continuing...
-                    pm2 delete greetings-app-staging || echo Service not found, continuing...
-                    pm2 delete greetings-app-preprod || echo Service not found, continuing...
-                    pm2 delete greetings-app-prod || echo Service not found, continuing...
+                    npx pm2 delete greetings-app-dev || exit 0
+                    npx pm2 delete greetings-app-staging || exit 0
+                    npx pm2 delete greetings-app-preprod || exit 0
+                    npx pm2 delete greetings-app-prod || exit 0
                 """
             }
         }
