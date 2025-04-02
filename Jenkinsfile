@@ -1,3 +1,4 @@
+//Vladislavs Senevics, 221RDB453
 pipeline {
     agent any
 
