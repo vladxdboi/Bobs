@@ -10,7 +10,6 @@ pipeline {
         stage('Clone Repositories') {
             steps {
                 script {
-                    sh 'rm -rf ${PYTHON_GREETINGS_DIR} ${JS_API_FRAMEWORK_DIR}'
                     sh 'git clone https://github.com/mtararujs/python-greetings ${PYTHON_GREETINGS_DIR}'
                     sh 'git clone https://github.com/mtararujs/course-js-api-framework ${JS_API_FRAMEWORK_DIR}'
                 }
