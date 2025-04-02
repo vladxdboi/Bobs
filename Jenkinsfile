@@ -22,7 +22,7 @@ pipeline {
             steps {
                 bat """
                     echo Starting dependency installation...
-                    pip3 install -r .\\${PYTHON_GREETINGS_DIR}\\requirements.txt
+                    python -m pip install -r .\\${PYTHON_GREETINGS_DIR}\\requirements.txt
                 """
             }
         }
