@@ -25,7 +25,7 @@ pipeline {
                 script {
                     powershell """
                         Write-Host "Starting dependency installation..."
-                        pip3 install -r ${PYTHON_GREETINGS_DIR}\\requirements.txt
+                        pip install -r ${PYTHON_GREETINGS_DIR}\\requirements.txt
                     """
                 }
             }
